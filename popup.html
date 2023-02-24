@@ -1,0 +1,53 @@
+<!-- settings.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="popup.css">
+    <title>Highlight First Syllable Settings</title>
+    <script src="popup.js"></script>
+</head>
+
+<body>
+    <div class="centerElement">
+    <p class="title">Hyper<b>BOLD</b></p>
+</div>
+    <div class="formHolder">
+        <form id="settings-form">
+            <div class="switchHolder">
+                <p class="formLabel">Enabled</p>
+                <label class="switch">
+
+                    <input type="checkbox" id="enabled">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="switchHolder">
+                <p class="formLabel">Use Hilight</p>
+                <label class="switch">
+
+                    <input type="checkbox" id="enable-highlighting">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div class="switchHolder">
+                <p class="formLabel">Hilight Color</p>
+                <label>
+                    <select id="highlight-color" name="highlight-color">
+                        <option value="yellow">Yellow</option>
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                    </select>
+                </label>
+            </div>
+            
+            <div class="centerElement">
+            <button type="submit" class="submit">Save</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

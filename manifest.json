@@ -1,0 +1,26 @@
+{
+  "name": "Hyper Bold",
+  "version": "0.8",
+  "manifest_version": 3,
+  "description": "An accessability extension for those with ADHD who struggle to read text on the web.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "background.service_worker": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "action": {
+
+    "default_title": "Highlight First Syllable",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
