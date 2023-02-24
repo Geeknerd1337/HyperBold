@@ -87,6 +87,7 @@ function boldFirstHalfOfWords(element, settings) {
       const newTextNode = document.createElement("span");
       newTextNode.innerHTML = words.join("");
 
+      newTextNode.setAttribute("data-modified", "true");
       element.setAttribute("data-modified", "true");
 
       // Replace the original text node with the new element
@@ -110,6 +111,8 @@ function highlightFirstSyllable() {
   const allText = [...paragraphs, ...lists, ...spans].filter((element) => {
     return element.offsetParent !== null;
   });
+
+  console.log(allText);
 
   console.log(allText.length);
   //Filter out any elements that aren't visible
@@ -222,6 +225,7 @@ const observer = new MutationObserver((mutationsList) => {
   // Handle changes here
 
   const currentURL = window.location.href;
+  let processedNodes = new Set();
 
   //Get all the elements from the mutation list that don't have the 'data-mofified' attribute
   const elements = mutationsList
@@ -229,26 +233,44 @@ const observer = new MutationObserver((mutationsList) => {
       return mutation.type === "childList";
     })
     .map((mutation) => {
-      return mutation.addedNodes;
+      //Get any paragraph elements in the target
+      const paragraphs = mutation.target.getElementsByTagName("p");
+      const lists = mutation.target.getElementsByTagName("li");
+      const spans = mutation.target.getElementsByTagName("span");
+      const allText = [...paragraphs, ...lists, ...spans].filter((element) => {
+        return element.offsetParent !== null;
+      });
+      return allText.flat();
     })
+    .flat()
     .filter((element) => {
-      return element.nodeType === Node.ELEMENT_NODE;
-    })
-    .filter((element) => {
-      return element.getAttribute("data-modified") !== "true";
+      if (element !== undefined) {
+        const isModified = element.getAttribute("data-modified") === "true";
+        if (!isModified && !processedNodes.has(element)) {
+          processedNodes.add(element);
+          element.setAttribute("data-modified", "true");
+          return true;
+        }
+        return false;
+      }
     });
 
-  console.log(elements.length);
-  console.log(elements);
+  console.log("ELEMENTS");
 
-  return;
   //If there are no elements, then return
   if (elements.length === 0) {
     return;
   }
 
+  //Print the text of each element
+  elements.forEach((element) => {
+    console.log(element.textContent);
+  });
+
   // Iterate over each <p> element
   for (const element of elements) {
+    //console.log(elements.length);
+    //console.log(element);
     boldFirstHalfOfWords(element);
   }
 
