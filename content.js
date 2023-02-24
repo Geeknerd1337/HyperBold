@@ -87,6 +87,8 @@ function boldFirstHalfOfWords(element, settings) {
       const newTextNode = document.createElement("span");
       newTextNode.innerHTML = words.join("");
 
+      element.setAttribute("data-modified", "true");
+
       // Replace the original text node with the new element
       element.replaceChild(newTextNode, childNode);
     } else if (childNode.nodeType === Node.ELEMENT_NODE) {
@@ -218,27 +220,52 @@ const targetNode = document.body;
 // Create an observer instance
 const observer = new MutationObserver((mutationsList) => {
   // Handle changes here
-  console.log("Content changed!");
+
   const currentURL = window.location.href;
 
-  //Iterate over every element in the mutation list and call boldFirstHalfOfWords if it's a p, span, li, or a tag
-  for (const mutation of mutationsList) {
-    if (mutation.type === "childList") {
-      for (const node of mutation.addedNodes) {
-        if (
-          node.tagName === "P" ||
-          node.tagName === "SPAN" ||
-          node.tagName === "LI" ||
-          node.tagName === "A"
-        ) {
-          boldFirstHalfOfWords(node);
-        }
-      }
-    }
+  //Get all the elements from the mutation list that don't have the 'data-mofified' attribute
+  const elements = mutationsList
+    .filter((mutation) => {
+      return mutation.type === "childList";
+    })
+    .map((mutation) => {
+      return mutation.addedNodes;
+    })
+    .filter((element) => {
+      return element.nodeType === Node.ELEMENT_NODE;
+    })
+    .filter((element) => {
+      return element.getAttribute("data-modified") !== "true";
+    });
+
+  console.log(elements.length);
+  console.log(elements);
+
+  return;
+  //If there are no elements, then return
+  if (elements.length === 0) {
+    return;
   }
+
+  // Iterate over each <p> element
+  for (const element of elements) {
+    boldFirstHalfOfWords(element);
+  }
+
+  const boldElements = document.getElementsByTagName("b");
+  for (let i = 0; i < boldElements.length; i++) {
+    boldElements[i].style.fontWeight = "700";
+  }
+
+  console.log(elements);
 });
 
 // Start observing the target node for configured mutations
 observer.observe(targetNode, { childList: true, subtree: true });
+
+document.body.addEventListener("load", () => {
+  console.log("LOADED");
+  highlightFirstSyllable();
+});
 
 document.addEventListener("DOMContentLoaded", highlightFirstSyllable());
