@@ -105,7 +105,7 @@ async function runExtension() {
 
             //If the length of the word is 3 then just bold the first letter
             if (word.length === 3) {
-              ret = `<${highlightTag} data-modified="true" style="font-weight:700;>${
+              ret = `<${highlightTag} data-modified="true" style="font-weight:700;">${
                 word[0]
               }</${highlightTag}>${word.slice(1)}`;
             }
