@@ -3,6 +3,7 @@ const DEFAULT_SETTINGS = {
   enableHighlighting: false,
   highlightColor: "yellow",
   websites: [],
+  blacklist: [],
 };
 
 let settings;

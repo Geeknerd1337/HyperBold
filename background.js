@@ -4,6 +4,7 @@ const DEFAULT_SETTINGS = {
   enableHighlighting: false,
   highlightColor: "yellow",
   websites: [],
+  blacklist: [],
 };
 
 // Load settings from storage

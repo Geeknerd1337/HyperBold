@@ -3,6 +3,7 @@ const DEFAULT_SETTINGS = {
   enableHighlighting: false,
   highlightColor: "yellow",
   websites: [],
+  blacklist: [],
 };
 
 let mySettings = DEFAULT_SETTINGS;
@@ -33,10 +34,23 @@ window.onload = function () {
 
       if (event.target.checked) {
         mySettings.websites.push(hostname);
+        //remove it from the blacklist if it's there
+        mySettings.blacklist = mySettings.blacklist.filter(
+          (site) => site !== hostname
+        );
+
+        if (mySettings.websites.includes(url)) {
+          pageControl.checked = true;
+        }
       } else {
         mySettings.websites = mySettings.websites.filter(
           (site) => site !== hostname
         );
+        //add it to the blacklist if it's not there
+        if (!mySettings.blacklist.includes(hostname)) {
+          mySettings.blacklist.push(hostname);
+        }
+        pageControl.checked = false;
       }
       saveSettings(mySettings);
     });
@@ -51,10 +65,18 @@ window.onload = function () {
 
       if (event.target.checked) {
         mySettings.websites.push(url);
+        //remove it from the blacklist if it's there
+        mySettings.blacklist = mySettings.blacklist.filter(
+          (site) => site !== url
+        );
       } else {
         mySettings.websites = mySettings.websites.filter(
           (site) => site !== url
         );
+        //add it to the blacklist if it's not there
+        if (!mySettings.blacklist.includes(url)) {
+          mySettings.blacklist.push(url);
+        }
       }
       saveSettings(mySettings);
     });
@@ -86,7 +108,29 @@ function loadSettings() {
       var hostname = new URL(url).hostname;
 
       const isSiteEnabled = mySettings.websites.includes(hostname);
-      const isPageEnabled = mySettings.websites.includes(url);
+      const isPageEnabled =
+        mySettings.websites.includes(url) &&
+        !mySettings.blacklist.includes(hostname);
+
+      //If the site doesn't exist in mySettings.websites and it doesn't exist in the blacklist, add it to the websites
+      if (
+        !isSiteEnabled &&
+        !mySettings.blacklist.includes(hostname) &&
+        !mySettings.websites.includes(hostname)
+      ) {
+        mySettings.websites.push(hostname);
+        saveSettings(mySettings);
+      }
+
+      //Do the same with the page
+      if (
+        !isPageEnabled &&
+        !mySettings.blacklist.includes(url) &&
+        !mySettings.websites.includes(url)
+      ) {
+        mySettings.websites.push(url);
+        saveSettings(mySettings);
+      }
 
       document.getElementById("site-switch").checked = isSiteEnabled;
       document.getElementById("site-label").innerText = hostname;
