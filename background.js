@@ -1,8 +1,9 @@
 // Define default settings
 const DEFAULT_SETTINGS = {
   enabled: true,
-  enableHighlighting: true,
+  enableHighlighting: false,
   highlightColor: "yellow",
+  websites: [],
 };
 
 // Load settings from storage

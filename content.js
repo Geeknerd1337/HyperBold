@@ -2,6 +2,7 @@ const DEFAULT_SETTINGS = {
   enabled: true,
   enableHighlighting: false,
   highlightColor: "yellow",
+  websites: [],
 };
 
 let settings;
