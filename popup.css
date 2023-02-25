@@ -45,6 +45,7 @@ body {
   align-items: center;
   justify-content: center;
   display: flex;
+  flex-direction: column;
 }
 
 .formLabel {
@@ -56,6 +57,24 @@ body {
   color: white;
   font-size: 16px;
   margin-bottom: 0px;
+}
+
+a{
+  color: #2196f3;
+  text-decoration: underline;
+
+}
+
+a:hover{
+  color: #2196f3;
+}
+
+a:active{
+  color: #2196f3;
+}
+
+a:visited{
+  color: purple;
 }
 
 .siteLabel {
