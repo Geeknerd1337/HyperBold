@@ -114,7 +114,7 @@ window.onload = function () {
       }
     } else {
       mySettings.enableHighlighting = false;
-      submitButton.classList.remove("disabled");
+      submitButton.classList.add("disabled");
     }
 
     saveSettings(mySettings);

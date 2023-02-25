@@ -23,3 +23,17 @@ browser.runtime.onInstalled.addListener((details) => {
     saveSettings(DEFAULT_SETTINGS);
   }
 });
+
+//When the extension starts up, load the settings and set up the popup
+browser.runtime.onStartup.addListener(() => {
+  loadSettings().then((settings) => {
+    const includesWebsite = settings.websites.includes(url);
+    //Get the host name
+    const url = new URL(tab.url);
+    const hostname = url.hostname;
+    const includesPage = settings.websites.includes(hostname);
+    const pageBlacklist = settings.blacklist.includes(hostname);
+
+    chrome.browserAction.setIcon({ path: "active.png" });
+  });
+});
