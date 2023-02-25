@@ -10,8 +10,8 @@
 
 <body>
     <div class="centerElement">
-    <p class="title">Hyper<b>BOLD</b></p>
-</div>
+        <p class="title">Hyper<b>BOLD</b></p>
+    </div>
     <div class="formHolder">
         <form id="settings-form">
             <div class="switchHolder">
@@ -43,8 +43,10 @@
             </div>
             <div class="switchHolder">
                 <div class="verticalGroup">
-                <p class="formLabel">This Website:</p>
-                <p class="siteLabel" id="site-label">This Website:</p>
+                    <p class="formLabel">This Website:</p>
+                    <div class="siteLabel">
+                        <p id="site-label">This Page:</p>
+                    </div>
                 </div>
                 <label class="switch">
                     <input type="checkbox" id="site-switch">
@@ -54,17 +56,19 @@
 
             <div class="switchHolder">
                 <div class="verticalGroup">
-                <p class="formLabel">This Page:</p>
-                <p class="siteLabel" id="page-label">This Page:</p>
+                    <p class="formLabel">This Page:</p>
+                    <div class="siteLabel">
+                        <p id="page-label">This Page:</p>
+                    </div>
                 </div>
                 <label class="switch">
                     <input type="checkbox" id="page-switch">
                     <span class="slider round"></span>
                 </label>
             </div>
-            
+
             <div class="centerElement">
-            <button type="submit" class="submit">Save</button>
+                <button type="submit" class="submit">Save</button>
             </div>
         </form>
     </div>

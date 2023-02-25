@@ -1,5 +1,5 @@
 html{
-    width: 200px;
+
 
     background: rgb(29,31,33);
     background: linear-gradient(128deg, rgba(29,31,33,1) 0%, rgba(112,120,128,1) 100%);
@@ -8,6 +8,7 @@ html{
 
 body{
     background-color: #1D1F21;
+    padding: 10px;
 }
 
 .submit{
@@ -52,6 +53,23 @@ body{
 .formLabel{
     color: white;
     font-size: 16px;
+}
+
+.siteLabel{
+  color:lightgray;
+  display: flex;
+  text-overflow: clip;
+  overflow: hidden;
+white-space: nowrap;
+
+  background-color: red;
+  max-width: 200px;
+
+}
+
+.verticalGroup{
+  background-color: green;
+
 }
 
 

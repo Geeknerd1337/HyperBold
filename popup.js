@@ -94,9 +94,10 @@ function loadSettings() {
       //Set the checkbox to the correct value
       document.getElementById("page-switch").checked = isPageEnabled;
       //Everything from the end of the host name to the end of the url
-      document.getElementById("page-label").innerText = url.substring(
-        url.indexOf(hostname) + hostname.length
-      );
+      document.getElementById("page-label").innerText = url
+        .substring(url.indexOf(hostname) + hostname.length)
+        .substring(0, 25)
+        .concat("...");
 
       // Use the hostname in your extension popup
       console.log("Current hostname: " + hostname);
