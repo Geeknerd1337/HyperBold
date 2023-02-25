@@ -15,6 +15,12 @@ window.onload = function () {
   const siteLabel = document.getElementById("site-label");
   const pageControl = document.getElementById("page-switch");
   const pageLabel = document.getElementById("page-label");
+  const enabledControl = document.getElementById("enabled");
+  const submitButton = document.getElementById("submitButton");
+
+  function toggleSubmitActive() {
+    submitButton.classList.remove("disabled");
+  }
 
   const enableHighlightingCheckbox = document.getElementById(
     "enable-highlighting"
@@ -52,6 +58,7 @@ window.onload = function () {
         }
         pageControl.checked = false;
       }
+      toggleSubmitActive();
       saveSettings(mySettings);
     });
   });
@@ -78,17 +85,53 @@ window.onload = function () {
           mySettings.blacklist.push(url);
         }
       }
+      toggleSubmitActive();
       saveSettings(mySettings);
     });
+  });
+
+  //When the enabled checkbox is changed, if it's true, enable the extension, if it's false, disable it
+  enabledControl.addEventListener("change", (event) => {
+    if (event.target.checked) {
+      mySettings.enabled = true;
+    } else {
+      mySettings.enabled = false;
+    }
+    toggleSubmitActive();
+    saveSettings(mySettings);
+  });
+
+  //When the enable highlighting checkbox is changed, if it's true, enable highlighting, if it's false, disable it
+  enableHighlightingCheckbox.addEventListener("change", (event) => {
+    if (event.target.checked) {
+      mySettings.enableHighlighting = true;
+      if (
+        enabledControl.checked &&
+        sitesControl.checked &&
+        pageControl.checked
+      ) {
+        submitButton.classList.remove("disabled");
+      }
+    } else {
+      mySettings.enableHighlighting = false;
+      submitButton.classList.remove("disabled");
+    }
+
+    saveSettings(mySettings);
+  });
+
+  highlightColorSelect.addEventListener("change", (event) => {
+    mySettings.highlightColor = event.target.value;
+    toggleSubmitActive();
+    saveSettings(mySettings);
   });
 
   //When the settings form is submitted, save the settings
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    saveSettings({
-      enabled: enabled.checked,
-      enableHighlighting: enableHighlightingCheckbox.checked,
-      highlightColor: highlightColorSelect.value,
+    //Refresh the page
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.reload(tabs[0].id);
     });
   });
 };
@@ -102,13 +145,14 @@ function loadSettings() {
       settings.enableHighlighting;
     document.getElementById("highlight-color").value = settings.highlightColor;
     mySettings = settings;
+    submitButton.classList.add("disabled");
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       // Extract the hostname from the URL of the tab
       var url = tabs[0].url;
       var hostname = new URL(url).hostname;
 
-      const isSiteEnabled = mySettings.websites.includes(hostname);
-      const isPageEnabled =
+      let isSiteEnabled = mySettings.websites.includes(hostname);
+      let isPageEnabled =
         mySettings.websites.includes(url) &&
         !mySettings.blacklist.includes(hostname);
 
@@ -119,6 +163,7 @@ function loadSettings() {
         !mySettings.websites.includes(hostname)
       ) {
         mySettings.websites.push(hostname);
+        isSiteEnabled = true;
         saveSettings(mySettings);
       }
 
@@ -129,6 +174,7 @@ function loadSettings() {
         !mySettings.websites.includes(url)
       ) {
         mySettings.websites.push(url);
+        isPageEnabled = true;
         saveSettings(mySettings);
       }
 

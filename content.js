@@ -45,10 +45,19 @@ async function runExtension() {
       return true;
     }
 
-    function boldFirstHalfOfWords(element) {
+    function ableToHilight() {
+      // Extract the hostname from the URL of the tab
+      var url = window.location.href;
+      var hostname = new URL(url).hostname;
       //Log if settings is undefined
+      let isSiteEnabled = settings.websites.includes(hostname);
+      let isPageEnabled = settings.websites.includes(url);
 
-      const highlightTag = false ? "mark" : "b";
+      return isSiteEnabled && isPageEnabled;
+    }
+
+    function boldFirstHalfOfWords(element) {
+      const highlightTag = false ? "null" : "null";
       let ret = "";
       // Loop through all child nodes of the element
       for (let i = 0; i < element.childNodes.length; i++) {
@@ -101,13 +110,59 @@ async function runExtension() {
             const firstHalf = word.slice(0, length);
             const secondHalf = word.slice(length);
 
-            ret = `<${highlightTag} data-modified="true" style="font-weight:700;">${firstHalf}</${highlightTag}>${secondHalf}`;
+            let color = settings.highlightColor;
+            color = window
+              .getComputedStyle(element, null)
+              .getPropertyValue("color");
+            color = color.replace("rgb(", "").replace(")", "");
+            color = color.split(",");
+            let text = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+            color = settings.highlightColor;
+
+            //If color === "Compliement", get the color of the text, and then get the compliment of that color
+            if (color === "compliment") {
+              color = window
+                .getComputedStyle(element, null)
+                .getPropertyValue("color");
+              color = color.replace("rgb(", "").replace(")", "");
+              color = color.split(",");
+
+              //Darken the color
+              const contrastingColorObj = [
+                color[0] + 100,
+                color[1] + 100,
+                color[2] + 100,
+              ];
+
+              const complementaryColorObj = [
+                255 - contrastingColorObj[0],
+                255 - contrastingColorObj[1],
+                255 - contrastingColorObj[2],
+              ];
+
+              // convert the color objects back to RGB values
+              const complementaryColor = complementaryColorObj;
+              const contrastingColor = contrastingColorObj;
+
+              text = `rgb(${contrastingColor[0]}, ${contrastingColor[1]}, ${contrastingColor[2]})`;
+
+              color = `rgb(${complementaryColor[0]}, ${complementaryColor[1]}, ${complementaryColor[2]})`;
+            }
+
+            ret = `<${highlightTag} data-modified="true" 
+            ${
+              settings.enableHighlighting
+                ? `style="background-color:${color};color:${text};"`
+                : `style="font-weight:700;"`
+            } >${firstHalf}</${highlightTag}>${secondHalf}`;
 
             //If the length of the word is 3 then just bold the first letter
             if (word.length === 3) {
-              ret = `<${highlightTag} data-modified="true" style="font-weight:700;">${
-                word[0]
-              }</${highlightTag}>${word.slice(1)}`;
+              ret = `<${highlightTag} data-modified="true" ${
+                settings.enableHighlighting
+                  ? `style="background-color:${color};color:${text};"`
+                  : `style="font-weight:700;"`
+              }>${word[0]}</${highlightTag}>${word.slice(1)}`;
             }
 
             // Replace the original word with the bolded word in the text content
@@ -136,6 +191,14 @@ async function runExtension() {
       const lists = document.getElementsByTagName("li");
       //Spans
       const spans = document.getElementsByTagName("span");
+
+      if (!ableToHilight()) {
+        return;
+      }
+
+      if (!settings.enabled) {
+        return;
+      }
 
       //Add elements to alltext
       const allText = [...paragraphs, ...lists, ...spans]
@@ -260,6 +323,9 @@ async function runExtension() {
 
     // Create an observer instance
     const observer = new MutationObserver((mutationsList) => {
+      if (!ableToHilight()) {
+        return;
+      }
       // Handle changes here
       console.log("Changed");
 
