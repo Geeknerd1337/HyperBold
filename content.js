@@ -30,6 +30,16 @@ async function runExtension() {
       if (element.getElementsByTagName("img").length > 0) {
         return false;
       }
+      if (element.getElementsByTagName("svg").length > 0) {
+        return false;
+      }
+      if (element.getElementsByTagName("iframe").length > 0) {
+        return false;
+      }
+
+      if (element.getElementsByTagName("i").length === 1) {
+        return false;
+      }
       return true;
     }
 
@@ -89,11 +99,11 @@ async function runExtension() {
             const firstHalf = word.slice(0, length);
             const secondHalf = word.slice(length);
 
-            ret = `<${highlightTag} data-modified="true">${firstHalf}</${highlightTag}>${secondHalf}`;
+            ret = `<${highlightTag} data-modified="true" style="font-weight:700;">${firstHalf}</${highlightTag}>${secondHalf}`;
 
             //If the length of the word is 3 then just bold the first letter
             if (word.length === 3) {
-              ret = `<${highlightTag} data-modified="true">${
+              ret = `<${highlightTag} data-modified="true" style="font-weight:700;>${
                 word[0]
               }</${highlightTag}>${word.slice(1)}`;
             }
@@ -102,7 +112,7 @@ async function runExtension() {
             words[j] = ret;
           }
           // Join the modified words back into a single string
-          const newTextNode = document.createElement("span");
+          const newTextNode = document.createElement(null);
           newTextNode.innerHTML = words.join("");
 
           newTextNode.setAttribute("data-modified", "true");
@@ -126,9 +136,22 @@ async function runExtension() {
       const spans = document.getElementsByTagName("span");
 
       //Add elements to alltext
-      const allText = [...paragraphs, ...lists].filter((element) => {
-        return element.offsetParent !== null;
-      });
+      const allText = [...paragraphs, ...lists, ...spans]
+        .filter((element) => {
+          return element.offsetParent !== null;
+        })
+        .filter((element) => {
+          //Remove all spans that have <i> as its only child
+          if (element.tagName === "SPAN") {
+            //If the current site is reddit, then don't do anything
+            //THis is so hacky but reddit will not function with span tags for some reason
+            const isReddit = currentURL.includes("reddit.com");
+            if (isReddit) {
+              return false;
+            }
+          }
+          return true;
+        });
 
       console.log(allText);
 
@@ -166,7 +189,7 @@ async function runExtension() {
       }
       const boldElements = document.getElementsByTagName("b");
       for (let i = 0; i < boldElements.length; i++) {
-        boldElements[i].style.fontWeight = "700";
+        //boldElements[i].style.fontWeight = "700";
       }
       return;
       const words = childNode.textContent.split(/(\s+)/);
@@ -238,6 +261,8 @@ async function runExtension() {
       // Handle changes here
       console.log("Changed");
 
+      numchanges++;
+
       if (!settings.enabled) {
         return;
       }
@@ -253,9 +278,10 @@ async function runExtension() {
           //Get any paragraph elements in the target
           const paragraphs = mutation.target.getElementsByTagName("p");
           const lists = mutation.target.getElementsByTagName("li");
+
           const spans = mutation.target.getElementsByTagName("span");
 
-          const allText = [...paragraphs, ...lists]
+          const allText = [...paragraphs, ...lists, ...spans]
             .filter((element) => {
               return element.offsetParent !== null;
             })
@@ -268,6 +294,18 @@ async function runExtension() {
         })
         .flat()
         .filter((element) => {
+          //Remove all spans that have <i> as its only child
+          if (element.tagName === "SPAN") {
+            //If the current site is reddit, then don't do anything
+            //THis is so hacky but reddit will not function with span tags for some reason
+            const isReddit = currentURL.includes("reddit.com");
+            if (isReddit) {
+              return false;
+            }
+          }
+          return true;
+        })
+        .filter((element) => {
           if (element !== undefined) {
             const isModified = element.getAttribute("data-modified") === "true";
             if (!isModified && !processedNodes.has(element)) {
@@ -279,8 +317,8 @@ async function runExtension() {
           }
         });
 
-      console.log("ELEMENTS");
-      console.log(elements);
+      //   console.log("ELEMENTS");
+      //   console.log(elements);
 
       //If there are no elements, then return
       if (elements.length === 0) {
@@ -300,9 +338,8 @@ async function runExtension() {
       }
 
       const boldElements = document.getElementsByTagName("b");
-      console.log(boldElements);
       for (let i = 0; i < boldElements.length; i++) {
-        boldElements[i].style.fontWeight = "700";
+        //boldElements[i].style.fontWeight = "700";
         //console.log(boldElements[i]);
       }
 
