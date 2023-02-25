@@ -126,7 +126,7 @@ async function runExtension() {
       const spans = document.getElementsByTagName("span");
 
       //Add elements to alltext
-      const allText = [...paragraphs, ...lists, ...spans].filter((element) => {
+      const allText = [...paragraphs, ...lists].filter((element) => {
         return element.offsetParent !== null;
       });
 
@@ -255,7 +255,7 @@ async function runExtension() {
           const lists = mutation.target.getElementsByTagName("li");
           const spans = mutation.target.getElementsByTagName("span");
 
-          const allText = [...paragraphs, ...lists, ...spans]
+          const allText = [...paragraphs, ...lists]
             .filter((element) => {
               return element.offsetParent !== null;
             })
@@ -280,6 +280,7 @@ async function runExtension() {
         });
 
       console.log("ELEMENTS");
+      console.log(elements);
 
       //If there are no elements, then return
       if (elements.length === 0) {
