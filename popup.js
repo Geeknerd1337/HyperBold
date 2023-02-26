@@ -10,6 +10,7 @@ let mySettings = DEFAULT_SETTINGS;
 
 window.onload = function () {
   loadSettings();
+
   const form = document.querySelector("#settings-form");
   const sitesControl = document.getElementById("site-switch");
   const siteLabel = document.getElementById("site-label");
@@ -39,7 +40,9 @@ window.onload = function () {
       var hostname = new URL(url).hostname;
 
       if (event.target.checked) {
-        mySettings.websites.push(hostname);
+        if (!mySettings.websites.includes(hostname)) {
+          mySettings.websites.push(hostname);
+        }
         //remove it from the blacklist if it's there
         mySettings.blacklist = mySettings.blacklist.filter(
           (site) => site !== hostname
@@ -71,7 +74,9 @@ window.onload = function () {
       var hostname = new URL(url).hostname;
 
       if (event.target.checked) {
-        mySettings.websites.push(url);
+        if (!mySettings.websites.includes(url)) {
+          mySettings.websites.push(url);
+        }
         //remove it from the blacklist if it's there
         mySettings.blacklist = mySettings.blacklist.filter(
           (site) => site !== url
@@ -162,7 +167,9 @@ function loadSettings() {
         !mySettings.blacklist.includes(hostname) &&
         !mySettings.websites.includes(hostname)
       ) {
-        mySettings.websites.push(hostname);
+        if (!mySettings.websites.includes(hostname)) {
+          mySettings.websites.push(hostname);
+        }
         isSiteEnabled = true;
         saveSettings(mySettings);
       }
@@ -173,7 +180,9 @@ function loadSettings() {
         !mySettings.blacklist.includes(url) &&
         !mySettings.websites.includes(url)
       ) {
-        mySettings.websites.push(url);
+        if (!mySettings.websites.includes(url)) {
+          mySettings.websites.push(url);
+        }
         isPageEnabled = true;
         saveSettings(mySettings);
       }

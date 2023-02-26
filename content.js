@@ -198,6 +198,8 @@ async function runExtension() {
       }
 
       if (!settings.enabled) {
+        console.log("HMMM");
+
         return;
       }
 
