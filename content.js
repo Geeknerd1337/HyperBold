@@ -58,6 +58,7 @@ async function runExtension() {
 
     function boldFirstHalfOfWords(element) {
       const highlightTag = false ? "null" : "null";
+
       let ret = "";
       // Loop through all child nodes of the element
       for (let i = 0; i < element.childNodes.length; i++) {
@@ -385,9 +386,6 @@ async function runExtension() {
           }
         });
 
-      //   console.log("ELEMENTS");
-      //   console.log(elements);
-
       //If there are no elements, then return
       if (elements.length === 0) {
         return;
@@ -404,14 +402,6 @@ async function runExtension() {
         //console.log(element);
         boldFirstHalfOfWords(element);
       }
-
-      const boldElements = document.getElementsByTagName("b");
-      for (let i = 0; i < boldElements.length; i++) {
-        //boldElements[i].style.fontWeight = "700";
-        //console.log(boldElements[i]);
-      }
-
-      //console.log(elements);
     });
 
     // Start observing the target node for configured mutations

@@ -14,7 +14,8 @@
   "action": {
 
     "default_title": "Highlight First Syllable",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": "active.png"
   },
   "content_scripts": [
     {
