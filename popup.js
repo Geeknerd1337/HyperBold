@@ -13,9 +13,8 @@ window.onload = function () {
 
   const form = document.querySelector("#settings-form");
   const sitesControl = document.getElementById("site-switch");
-  const siteLabel = document.getElementById("site-label");
+
   const pageControl = document.getElementById("page-switch");
-  const pageLabel = document.getElementById("page-label");
   const enabledControl = document.getElementById("enabled");
   const submitButton = document.getElementById("submitButton");
 
@@ -27,10 +26,6 @@ window.onload = function () {
     "enable-highlighting"
   );
   const highlightColorSelect = document.getElementById("highlight-color");
-  const enabled = document.getElementById("enabled");
-
-  console.log("hmm");
-  console.log(form);
 
   //When the site switched is changed, if it's true, add the current site to the list of websites, if it's false, remove it
   sitesControl.addEventListener("change", (event) => {
@@ -71,7 +66,6 @@ window.onload = function () {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       // Extract the hostname from the URL of the tab
       var url = tabs[0].url;
-      var hostname = new URL(url).hostname;
 
       if (event.target.checked) {
         if (!mySettings.websites.includes(url)) {
@@ -197,9 +191,6 @@ function loadSettings() {
         .substring(url.indexOf(hostname) + hostname.length)
         .substring(0, 25)
         .concat("...");
-
-      // Use the hostname in your extension popup
-      console.log("Current hostname: " + hostname);
     });
     //Get whether the base url of this site is in the list of websites
   });

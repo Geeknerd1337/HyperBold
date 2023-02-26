@@ -70,13 +70,6 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
         const pageBlacklist = settings.blacklist.includes(hostname);
         const enabled = settings.enabled;
 
-        console.log("Ham");
-        console.log(settings);
-        console.log(url);
-        console.log(url.href);
-
-        console.log(enabled, includesWebsite, pageBlacklist);
-
         if (enabled && includesWebsite && !pageBlacklist) {
           chrome.action.setIcon({ path: "/active.png" });
         } else {
