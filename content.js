@@ -20,31 +20,6 @@ async function runExtension() {
   try {
     settings = await loadSettings();
 
-    console.log("HUHHHH?");
-
-    function checkForElements(element) {
-      //Checks to see if an element contains a link, or image
-      //If it does, then it returns false
-      //If it doesn't, then it returns true
-      if (element.getElementsByTagName("a").length > 0) {
-        return false;
-      }
-      if (element.getElementsByTagName("img").length > 0) {
-        return false;
-      }
-      if (element.getElementsByTagName("svg").length > 0) {
-        return false;
-      }
-      if (element.getElementsByTagName("iframe").length > 0) {
-        return false;
-      }
-
-      if (element.getElementsByTagName("i").length === 1) {
-        return false;
-      }
-      return true;
-    }
-
     function ableToHilight() {
       // Extract the hostname from the URL of the tab
       var url = window.location.href;
@@ -52,6 +27,26 @@ async function runExtension() {
       //Log if settings is undefined
       let isSiteEnabled = settings.websites.includes(hostname);
       let isPageEnabled = settings.websites.includes(url);
+
+      console.log(settings.blacklist.includes(url));
+      console.log(settings.blacklist.includes(hostname));
+      console.log(settings.websites.includes(hostname));
+
+      console.log("HUHHH", url);
+      if (!settings.websites.includes(hostname)) {
+        isSiteEnabled = true;
+        settings.websites.push(hostname);
+        saveSettings(settings);
+      }
+      if (!settings.websites.includes(url)) {
+        settings.websites.push(url);
+        isPageEnabled = true;
+        saveSettings(settings);
+      }
+
+      console.log("isSiteEnabled: " + isSiteEnabled);
+      console.log("isPageEnabled: " + isPageEnabled);
+      console.log(settings.websites);
 
       return isSiteEnabled && isPageEnabled;
     }
@@ -227,7 +222,6 @@ async function runExtension() {
       //Filter out any elements that aren't visible
 
       console.log(allText.length);
-      console.log("SEEEE", settings);
 
       const s = settings;
 
@@ -255,86 +249,21 @@ async function runExtension() {
       for (const text of allText) {
         boldFirstHalfOfWords(text);
       }
-      const boldElements = document.getElementsByTagName("b");
-      for (let i = 0; i < boldElements.length; i++) {
-        //boldElements[i].style.fontWeight = "700";
-      }
-      return;
-      const words = childNode.textContent.split(/(\s+)/);
-      // Highlight the first syllable of each word
-      const halfWords = words.map((word) => {
-        if (word === null) {
-          return null;
-        }
-
-        const length = Math.ceil(word.length / 2);
-
-        if (length === 0) {
-          return word;
-        }
-
-        const firstHalf = word.slice(0, length);
-        const secondHalf = word.slice(length);
-
-        let ret = `<${highlightTag}>${firstHalf}</${highlightTag}>${secondHalf}`;
-
-        //If the length of the word is 3 then just bold the first letter
-        if (word.length === 3) {
-          ret = `<${highlightTag}>${word[0]}</${highlightTag}>${word.slice(1)}`;
-        }
-
-        return ret;
-      });
-
-      const syllableWords = words.map((word) => {
-        const firstVowelIndex = word.match(
-          /([aeiouyAEIOUY]+[^e.\s])|([aiouyAEIOUY]+\b)|(\b[^aeiouy0-9.']+e\b)/gi
-        );
-        if (firstVowelIndex === null || firstVowelIndex === -1) {
-          return word;
-        }
-        if (firstVowelIndex.length > 0) {
-          //Get everything up to the end of the first two syllables
-          let firstPart = word.slice(0, firstVowelIndex[0].length);
-
-          //See if the last letter of the first part is a vowel
-          const lastLetter = firstPart.match(/[aeiouyAEIOUY]$/gi);
-
-          let restOfWord = word.slice(firstPart.length);
-
-          //If the last letter is a vowel, then we need to add the next letter to the first part
-          if (lastLetter !== null) {
-            firstPart += word[firstVowelIndex[0].length + 1];
-            restOfWord = word.slice(firstPart.length + 1);
-          }
-
-          return `<mark>${firstPart}</mark>${restOfWord}`;
-        } else {
-          return word;
-        }
-      });
-
-      // Replace the text content of the <p> element with the highlighted text
-      text.innerHTML = halfWords.join(" ");
     }
 
     const currentURL = window.location.href;
 
     // Select the node that will be observed for changes
     const targetNode = document.body;
-    let numchanges = 0;
 
     // Create an observer instance
     const observer = new MutationObserver((mutationsList) => {
       if (!ableToHilight()) {
         return;
       }
-      // Handle changes here
-      console.log("Changed");
-
-      numchanges++;
 
       if (!settings.enabled) {
+        console.log("DISABLED");
         return;
       }
       const currentURL = window.location.href;
@@ -393,15 +322,8 @@ async function runExtension() {
         return;
       }
 
-      //Print the text of each element
-      elements.forEach((element) => {
-        // console.log(element);
-      });
-
       // Iterate over each <p> element
       for (const element of elements) {
-        //console.log(elements.length);
-        //console.log(element);
         boldFirstHalfOfWords(element);
       }
     });

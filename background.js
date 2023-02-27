@@ -30,20 +30,11 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       if (!tab.url) {
         return;
       }
-      console.log(tab);
       const url = new URL(tab.url);
       const includesWebsite = settings.websites.includes(url.href);
       const hostname = url.hostname;
-      const includesPage = settings.websites.includes(hostname);
       const pageBlacklist = settings.blacklist.includes(hostname);
       const enabled = settings.enabled;
-
-      console.log("Ham");
-      console.log(settings);
-      console.log(url);
-      console.log(url.href);
-
-      console.log(enabled, includesWebsite, pageBlacklist);
 
       if (enabled && includesWebsite && !pageBlacklist) {
         chrome.action.setIcon({ path: "/active.png" });
@@ -62,11 +53,9 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
         if (!tab.url) {
           return;
         }
-        console.log(tab);
         const url = new URL(tab.url);
         const includesWebsite = settings.websites.includes(url.href);
         const hostname = url.hostname;
-        const includesPage = settings.websites.includes(hostname);
         const pageBlacklist = settings.blacklist.includes(hostname);
         const enabled = settings.enabled;
 
