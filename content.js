@@ -217,12 +217,6 @@ async function runExtension() {
         return;
       }
 
-      // Use mark or b
-      const highlightTag = settings.enableHighlighting ? "mark" : "b";
-
-      // Mark color
-      const highlightColor = settings.highlightColor;
-
       // Iterate over each <p> element
       for (const text of allText) {
         boldFirstHalfOfWords(text);
