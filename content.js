@@ -28,11 +28,6 @@ async function runExtension() {
       let isSiteEnabled = settings.websites.includes(hostname);
       let isPageEnabled = settings.websites.includes(url);
 
-      console.log(settings.blacklist.includes(url));
-      console.log(settings.blacklist.includes(hostname));
-      console.log(settings.websites.includes(hostname));
-
-      console.log("HUHHH", url);
       if (!settings.websites.includes(hostname)) {
         isSiteEnabled = true;
         settings.websites.push(hostname);
@@ -43,10 +38,6 @@ async function runExtension() {
         isPageEnabled = true;
         saveSettings(settings);
       }
-
-      console.log("isSiteEnabled: " + isSiteEnabled);
-      console.log("isPageEnabled: " + isPageEnabled);
-      console.log(settings.websites);
 
       return isSiteEnabled && isPageEnabled;
     }
@@ -193,8 +184,6 @@ async function runExtension() {
       }
 
       if (!settings.enabled) {
-        console.log("HMMM");
-
         return;
       }
 
@@ -216,13 +205,6 @@ async function runExtension() {
           return true;
         });
 
-      console.log(allText);
-
-      console.log(allText.length);
-      //Filter out any elements that aren't visible
-
-      console.log(allText.length);
-
       const s = settings;
 
       //Set the checkbox to the correct value
@@ -230,10 +212,6 @@ async function runExtension() {
       settings.enabled = s.enabled;
       settings.enableHighlighting = s.enableHighlighting;
       settings.highlightColor = s.highlightColor;
-
-      console.log("AHHHH");
-      console.log(settings.enabled);
-      console.log("AHHHH");
 
       if (!settings.enabled) {
         return;
@@ -263,7 +241,6 @@ async function runExtension() {
       }
 
       if (!settings.enabled) {
-        console.log("DISABLED");
         return;
       }
       const currentURL = window.location.href;
@@ -332,7 +309,6 @@ async function runExtension() {
     observer.observe(targetNode, { childList: true, subtree: true });
 
     document.body.addEventListener("load", () => {
-      console.log("LOADED");
       highlightFirstSyllable();
     });
 
