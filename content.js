@@ -16,6 +16,10 @@ function loadSettings() {
   });
 }
 
+function saveSettings(settings) {
+  return chrome.storage.local.set(settings);
+}
+
 async function runExtension() {
   try {
     settings = await loadSettings();
