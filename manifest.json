@@ -1,6 +1,6 @@
 {
   "name": "Hyper Bold",
-  "version": "0.8",
+  "version": "0.0.0.1",
   "manifest_version": 3,
   "description": "An accessability extension for those with ADHD who struggle to read text on the web.",
   "permissions": [
