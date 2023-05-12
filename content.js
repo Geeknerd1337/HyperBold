@@ -24,7 +24,7 @@ async function runExtension() {
   try {
     settings = await loadSettings();
 
-    function ableToHilight() {
+    function ableToHighlight() {
       // Extract the hostname from the URL of the tab
       var url = window.location.href;
       var hostname = new URL(url).hostname;
@@ -32,12 +32,12 @@ async function runExtension() {
       let isSiteEnabled = settings.websites.includes(hostname);
       let isPageEnabled = settings.websites.includes(url);
 
-      if (!settings.websites.includes(hostname)) {
+      if (!settings.websites.includes(hostname) &&  !settings.blacklist.includes(hostname)) {
         isSiteEnabled = true;
         settings.websites.push(hostname);
         saveSettings(settings);
       }
-      if (!settings.websites.includes(url)) {
+      if (!settings.websites.includes(url) &&  !settings.blacklist.includes(url)) {
         settings.websites.push(url);
         isPageEnabled = true;
         saveSettings(settings);
@@ -183,7 +183,7 @@ async function runExtension() {
       //Spans
       const spans = document.getElementsByTagName("span");
 
-      if (!ableToHilight()) {
+      if (!ableToHighlight()) {
         return;
       }
 
@@ -234,7 +234,7 @@ async function runExtension() {
 
     // Create an observer instance
     const observer = new MutationObserver((mutationsList) => {
-      if (!ableToHilight()) {
+      if (!ableToHighlight()) {
         return;
       }
 
