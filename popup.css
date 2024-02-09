@@ -1,6 +1,7 @@
 html {
   background: rgb(29, 31, 33);
   background: linear-gradient(128deg, rgba(29, 31, 33, 1) 0%, rgba(112, 120, 128, 1) 100%);
+  width: fit-content;
 }
 
 body {
